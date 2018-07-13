@@ -1,0 +1,22 @@
+- name: test set_platform_fact incremental
+  hosts: testhost
+  gather_facts: no
+  tasks:
+    
+    - name: Generate inline loop for set_platform_fact
+      set_platform_fact:
+        dig_list_platform:
+          default: "{{ dig_list_platform + [ item ] }}"
+      loop:
+        - two
+        - three
+        - four
+      vars:
+        dig_list_platform:
+            - one
+    - debug: var=dig_list_platform
+
+    - name: verify cumulative set fact worked
+      assert:
+        that:
+           - dig_list_platform == ['one', 'two', 'three', 'four']
